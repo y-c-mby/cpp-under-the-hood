@@ -37,6 +37,7 @@ void init_default_text_formmater(default_text_formmaterptr this){
 //}
 void init_default_text_formmater_dtf(default_text_formmaterptr this , const default_text_formmaterptr other){
     this->t = other->t;
+    printf("%d \n",other->id);
     this->id = default_text_formatter_ider_next_id++;
     printf("--- DefaultTextFormatter Copy CTOR, from id: %d\n########## C %d ##########\n", other->id, this->id);
 }
@@ -47,6 +48,7 @@ void init_default_text_formmater_dtf(default_text_formmaterptr this , const defa
 //}
 default_text_formmaterptr dtf_assignment(default_text_formmaterptr this,default_text_formmaterptr other){
     this->t = other->t;
+
     printf("--- DefaultTextFormatter operator=(), from id: %d to id: %d\n", other->id, this->id);
     return this;
 }
@@ -110,7 +112,7 @@ void ppf_destroy_text(pre_post_fixerptr this){
 //}
 /*virtual*/void v_ppf_print_cptr(pre_post_fixerptr this,const char* text){
     printf("%-60s | ", "[PrePostFixer::print(const char*)]");
-    printf("%s%s%s\n", this->pre, text,this-> post);
+    printf("%s\n", text);
 }
 /*virtual*/void v_ppf_print_lc(pre_post_fixerptr this,long num , char symbol){
     printf("%-60s | ","[PrePostFixer::print(long, char)]");
@@ -314,6 +316,7 @@ void ppfdf_print_fc(pre_post_float_dollar_fixerptr this, float num, char symbol)
 //}
 void ppc_init_checker(pre_post_checkerptr this){
     ppfdf_init_dollar_fixer_cptrcptr(&this->p,"[[[[ ", " ]]]]");
+    this->p.ppdf.ppf.dft.t.void_ptr=ppc_arr;
     printf("--- PrePostChecker CTOR: \"%s\"...\"%s\"\n", this->p.ppdf.ppf.pre, this->p.ppdf.ppf.post);
 }
 //PrePostChecker::~PrePostChecker()

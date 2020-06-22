@@ -1,5 +1,5 @@
 #include "cpp2c_polymorphism_defs.h"
-
+extern voidptr multiplier_arr[2];
 
 void doPrePostFixer()
 {
@@ -121,9 +121,11 @@ void doMultiplier()
     multiplier m3;
     multiplier m4;
     init_default_text_formmater(&m1.d);
+    m1.d.t.void_ptr=multiplier_arr;
     m1.times=3;
     printf("--- Multiplier CTOR: times = %d\n", 3);
     init_default_text_formmater(&m2.d);
+    m2.d.t.void_ptr=multiplier_arr;
     m2.times=5;
     printf("--- Multiplier CTOR: times = %d\n", 5);
 //    init_default_text_formmater_dtf()
@@ -143,57 +145,85 @@ void doMultiplier()
 
     printf("\n--- end doMultiplier() ---\n\n");
 }
-//
-//void doFormatterArray()
-//{
-//    printf("\n--- start doFormatterArray() ---\n\n");
-//
-//    DefaultTextFormatter formatters[] =
-//    {
-//        PrePostDollarFixer("!!! ", " !!!"),
-//        Multiplier(4),
-//        PrePostChecker()
-//    };
-//
-//    for (int i = 0; i < 3; ++i)
+
+void doFormatterArray()
+{
+    printf("\n--- start doFormatterArray() ---\n\n");
+    pre_post_dollar_fixer d;
+    ppdf_init_fixer_cptrcptr(&d,"!!!","!!!");
+    default_text_formmater d1,d2,d3;
+    init_default_text_formmater_dtf(&d1,&d.ppf.dft);
+    ppdf_destroy_fixer(&d);
+    multiplier m;
+    init_default_text_formmater(&m.d);
+    m.d.t.void_ptr=multiplier_arr;
+    m.times=4;
+    printf("--- Multiplier CTOR: times = %d\n", 4);
+    init_default_text_formmater_dtf(&d2,&m.d);
+    destroy_multiplier(&m);
+    pre_post_checker p;
+    ppc_init_checker(&p);
+    printf("%d \n",p.p.ppdf.ppf.dft.id);
+    init_default_text_formmater_dtf(&p.p.ppdf.ppf.dft , &d3);
+    ppc_destroy_checker(&p);
+    default_text_formmater formatters[] =
+    {
+            d1,d2,d3
+    };
+
+    for (int i = 0; i < 3; ++i)
+        v_dft_print_cptr(&formatters[i],"hello world");
 //        formatters[i].print("Hello World!");
+
+    printf("\n--- end doFormatterArray() ---\n\n");
+    dtf_destroy_text(&d1);
+    dtf_destroy_text(&d2);
+    dtf_destroy_text(&d3);
+}
 //
-//    printf("\n--- end doFormatterArray() ---\n\n");
-//}
-//
-//void doFormatterPtrs()
-//{
-//    printf("\n--- start doFormatterPtrs() ---\n\n");
-//
-//    DefaultTextFormatter* pfmt[] =
-//    {
-//        new PrePostDollarFixer("!!! ", " !!!"),
-//        new Multiplier(4),
-//        new PrePostChecker()
-//    };
-//
-//    for (int i = 0; i < 3; ++i)
-//        pfmt[i]->print("Hello World!");
-//
-//    for (int i = 2; i >= 0; --i)
-//        delete pfmt[i];
-//
-//    printf("\n--- end doFormatterPtrs() ---\n\n");
-//}
-//
-//void doFormatterDynamicArray()
-//{
-//    printf("\n--- start doFormatterDynamicArray() ---\n\n");
-//
-//    DefaultTextFormatter* formatters = generateFormatterArray();
-//
-//    for (int i = 0; i < 3; ++i)
-//        formatters[i].print("Hello World!");
-//
+void doFormatterPtrs()
+{
+    printf("\n--- start doFormatterPtrs() ---\n\n");
+    pre_post_dollar_fixer d;
+    ppdf_init_fixer_cptrcptr(&d,"!!!","!!!");
+    multiplier m;
+    init_default_text_formmater(&m.d);
+    m.d.t.void_ptr=multiplier_arr;
+    m.times=4;
+    printf("--- Multiplier CTOR: times = %d\n", 4);
+    pre_post_checker p;
+    ppc_init_checker(&p);
+    default_text_formmaterptr pfmt[] =
+    {
+            (default_text_formmaterptr)(&d),
+            (default_text_formmaterptr)(&m),
+            (default_text_formmaterptr)(&p)
+
+    };
+
+    for (int i = 0; i < 3; ++i)
+        pfmt[i]->t.void_ptr[1](&pfmt[i],"Hello World!");
+    ppc_destroy_checker(&p);
+    destroy_multiplier(&m);
+    ppdf_destroy_fixer(&d);
+
+    printf("\n--- end doFormatterPtrs() ---\n\n");
+}
+
+void doFormatterDynamicArray()
+{
+    printf("\n--- start doFormatterDynamicArray() ---\n\n");
+
+    default_text_formmaterptr formatters = dft_generateFormatterArray();
+
+    for (int i = 0; i < 3; ++i)
+        formatters[i].t.void_ptr[1](&formatters[i],"Hello World!");
 //    delete[] formatters;
-//
-//    printf("\n--- start doFormatterDynamicArray() ---\n\n");
-//}
+    for (int j = 0; j <3; ++j) {
+        dtf_destroy_text(&formatters[j]);
+    }
+    printf("\n--- end doFormatterDynamicArray() ---\n\n");
+}
 
 int main()
 {
@@ -212,10 +242,9 @@ int main()
     runAsPrePostHashFixerRef(&hfix);
 
     doMultiplier();
-//
-//    doFormatterArray();
-//    doFormatterPtrs();
-//    doFormatterDynamicArray();
+    doFormatterArray();
+    doFormatterPtrs();
+    doFormatterDynamicArray();
 
     printf("\n--- End main() ---\n\n");
     pphf_destroy_hash_fixer(&hfix);

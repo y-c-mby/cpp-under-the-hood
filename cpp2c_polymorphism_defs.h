@@ -3,7 +3,7 @@
 
 
 #include <stdio.h>
-typedef void (*voidptr)(void);
+typedef void (*voidptr)(void*,...);
 //inline void printFunc(const char* fname)
 //{
 //    printf("%-60s | ", fname);
@@ -21,9 +21,10 @@ typedef void (*voidptr)(void);
 //};
 typedef struct text_formatter{
     char c;
+    voidptr* void_ptr;
 }text_formatter;
 void tf_destroy(text_formatter* this);
-voidptr tf_arr[2]={(voidptr)tf_destroy,NULL};
+void init_text_formatter(text_formatter* this);
 /*print*/
 //
 ////// DefaultTextFormatter ////////////
@@ -64,7 +65,6 @@ default_text_formmaterptr dtf_assignment(default_text_formmaterptr this,default_
 void v_dft_print_cptr(default_text_formmaterptr this,const char* text);
 void dtf_destroy_text(default_text_formmaterptr this);
 default_text_formmaterptr dft_generateFormatterArray();
-voidptr dtf_arr[2]={(voidptr)dtf_destroy_text,(voidptr)v_dft_print_cptr};
 //// PrePostFixer ////////////
 
 //class PrePostFixer: public DefaultTextFormatter
@@ -100,7 +100,7 @@ void ppf_init_fixer(pre_post_fixerptr this,const char* prefix, const char* postf
 /*virtual*/void v_ppf_print_cptr(pre_post_fixerptr this,const char* text);
 /*virtual*/void v_ppf_print_lc(pre_post_fixerptr this,long num , char symbol);
 /*virtual*/char ppf_get_default_symbol(pre_post_fixerptr this);
-voidptr ppf_arr[4]={(voidptr)ppf_destroy_text,(voidptr)v_ppf_print_cptr,(voidptr)v_ppf_print_lc,(voidptr)ppf_get_default_symbol};
+
 //// PrePostFixer Defs ////////////
 
 /*inline functions*/
@@ -163,7 +163,6 @@ void ppdf_init_fixer_ppdf(pre_post_dollar_fixerptr this,const pre_post_dollar_fi
 void ppdf_print_ic(pre_post_dollar_fixerptr this,int num, char symbol );
 void ppdf_print_dc(pre_post_dollar_fixerptr this,double num, char symbol );
 /*virtual*/char ppdf_get_default_symbol(pre_post_dollar_fixerptr this);
-voidptr ppdf_arr[4]={(voidptr)ppdf_destroy_fixer,(voidptr)v_ppf_print_cptr,(voidptr)ppdf_print_lc,(voidptr)ppdf_get_default_symbol};
 //// PrePostDollarFixer Defs ////////////
 
 //inline char PrePostDollarFixer::getDefaultSymbol() const
@@ -200,15 +199,10 @@ void pphf_init_hash_fixer_i(pre_post_hash_fixerptr this, int prc);
 void pphf_print_ic(pre_post_hash_fixerptr this,int num ,char symbol);
 void pphf_print_dc(pre_post_hash_fixerptr this, double num ,char symbol);
 /*virtual*/char pphf_get_default_symbol(pre_post_hash_fixerptr this);
-voidptr pphf_arr[4]={(voidptr)pphf_destroy_hash_fixer,(voidptr)v_ppf_print_cptr,(voidptr)ppdf_print_lc,(voidptr)pphf_get_default_symbol};
+
 //// PrePostHashFixer Defs ////////////
 
-//inline void PrePostHashFixer::print(double num, char symbol) const
-//{
-//    printFunc("[PrePostHashFixer::print(double, char)]");
-//
-//    printf("%s[%c%.*f]%s\n", getPrefix(), symbol, precision, num, getPostfix());
-//}
+
 //
 //inline char PrePostHashFixer::getDefaultSymbol() const
 //{
@@ -239,7 +233,7 @@ void ppfdf_init_dollar_fixer_cptrcptr(pre_post_float_dollar_fixerptr this, const
 void ppfdf_print_f(pre_post_float_dollar_fixerptr this, float num);
 void ppfdf_print_fc(pre_post_float_dollar_fixerptr this, float num, char symbol);
 /*virtual*/char ppfdf_get_default_symbol(pre_post_float_dollar_fixerptr this);
-voidptr appfdf_arr[4]={(voidptr)ppfdf_destroy_dollar_fixer,(voidptr)v_ppf_print_cptr,(voidptr)pphf_print_lc,(voidptr)ppfdf_get_default_symbol};
+
 //// PrePostFloatDollarFixer Defs ////////////
 
 //inline char PrePostFloatDollarFixer::getDefaultSymbol() const
@@ -268,8 +262,12 @@ typedef struct pre{
 typedef pre_post_checker* pre_post_checkerptr;
 void ppc_init_checker(pre_post_checkerptr this);
 /*virtual*/void ppc_destroy_checker(pre_post_checkerptr this);
-voidptr ppc_arr[4]={(voidptr)ppc_destroy_checker,(voidptr)v_ppf_print_cptr,(voidptr)pphf_print_lc,(voidptr)ppfdf_get_default_symbol};
-
+void ppc_print_this_symbol_using_func(pre_post_checkerptr);
+void ppc_print_this_symbol_directly(pre_post_checkerptr);
+void ppc_print_dollar_symbol_by_casting_using_func(pre_post_checkerptr);
+void ppc_print_dollar_symbol_by_scope_func(pre_post_checkerptr);
+void ppc_print_dollar_symbol_by_cast_directly(pre_post_checkerptr);
+void ppc_print_dollar_symbol_by_scope_directly(pre_post_checkerptr);
 //
 //
 ////// Multiplier ////////////
@@ -291,12 +289,12 @@ typedef struct multiplier{
     int times;
 }multiplier;
 typedef multiplier* multiplierptr;
-void init_multiplier_i(multiplierptr this,int t);
+///*virtual*/void init_multiplier_i(multiplierptr this,int t);
 void destroy_multiplier(multiplierptr this);
 void multiplier_print_cptr(multiplierptr this,const char*);
-int multiplier_get_times(multiplierptr this);
-void multiplier_set_times_i(multiplierptr this,int t);
-voidptr multiplier_arr[2]={(voidptr)destroy_multiplier,(voidptr)multiplier_print_cptr};
+//int multiplier_get_times(multiplierptr this);
+//void multiplier_set_times_i(multiplierptr this,int t);
+
 //
 ////// Multiplier Defs ////////////
 //
@@ -306,20 +304,9 @@ voidptr multiplier_arr[2]={(voidptr)destroy_multiplier,(voidptr)multiplier_print
 //    printf("--- Multiplier CTOR: times = %d\n", times);
 //}
 //
-//inline Multiplier::~Multiplier()
-//{
-//    printf("--- Multiplier DTOR: times = %d\n", times);
-//}
+
 //
-//inline int Multiplier::getTimes() const
-//{
-//    return times;
-//}
-//
-//inline void Multiplier::setTimes(int t)
-//{
-//    times = t;
-//}
+
 
 
 
