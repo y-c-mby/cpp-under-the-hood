@@ -335,7 +335,7 @@ void ppc_init_checker(pre_post_checkerptr this){
 //}
 void ppc_print_this_symbol_using_func(pre_post_checkerptr this){
     printf("%-60s | ", "[PrePostChecker::printThisSymbolUsingFunc()]");
-//    printf("Default symbol is %c\n", this->p.ppdf.ppf.dft.t.void_ptr[3](this));
+    printf("Default symbol is %c\n", ((char(*)(const void* const))(this->p.ppdf.ppf.dft.t.void_ptr[3]))(this));
 }
 //void PrePostChecker::printThisSymbolDirectly() const
 //{
@@ -345,7 +345,7 @@ void ppc_print_this_symbol_using_func(pre_post_checkerptr this){
 //}
 void ppc_print_this_symbol_directly(pre_post_checkerptr this){
     printf("%-60s | ", "[PrePostChecker::printThisSymbolDirectly()]");
-    printf("Default symbol is %c\n",'$');
+    printf("Default symbol is %c\n",'@');
 }
 //void PrePostChecker::printDollarSymbolByCastUsingFunc() const
 //{
@@ -356,7 +356,7 @@ void ppc_print_this_symbol_directly(pre_post_checkerptr this){
 void ppc_print_dollar_symbol_by_casting_using_func(pre_post_checkerptr this){
     printf("%-60s | ","[PrePostChecker::printDollarSymbolByCastUsingFunc()]");
     this->p.ppdf.ppf.dft.t.void_ptr=ppfdf_arr;
-//    printf("Default symbol is %c\n",this->p.ppdf.ppf.dft.t.void_ptr[3](this));
+    printf("Default symbol is %c\n",((char(*)(const void* const))(this->p.ppdf.ppf.dft.t.void_ptr[3]))(this));
     this->p.ppdf.ppf.dft.t.void_ptr=ppc_arr;
 }
 //void PrePostChecker::printDollarSymbolByScopeUsingFunc() const
@@ -378,7 +378,7 @@ void ppc_print_dollar_symbol_by_scope_func(pre_post_checkerptr this){
 void ppc_print_dollar_symbol_by_cast_directly(pre_post_checkerptr this){
     printf("%-60s | ","[PrePostChecker::printDollarSymbolByCastDirectly()]");
     this->p.ppdf.ppf.dft.t.void_ptr=ppdf_arr;
-//    printf("Default symbol is %c\n",this->p.ppdf.ppf.dft.t.void_ptr[3](this));
+    printf("Default symbol is %c\n",((char(*)(const void* const))(this->p.ppdf.ppf.dft.t.void_ptr[3]))(this));
     this->p.ppdf.ppf.dft.t.void_ptr=ppc_arr;
 }
 //void PrePostChecker::printDollarSymbolByScopeDirectly() const

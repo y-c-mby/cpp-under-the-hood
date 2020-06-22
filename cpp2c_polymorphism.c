@@ -42,6 +42,13 @@ void doPrePostChecker()
 
     pre_post_checker check;
     ppc_init_checker(&check);
+    ppc_print_this_symbol_using_func(&check);
+    ppc_print_this_symbol_directly(&check);
+    ppc_print_dollar_symbol_by_cast_directly(&check);
+    ppc_print_dollar_symbol_by_scope_directly(&check);
+    ppc_print_dollar_symbol_by_casting_using_func(&check);
+    ppc_print_dollar_symbol_by_scope_func(&check);
+
 //    check.printThisSymbolUsingFunc();
 //    check.printThisSymbolDirectly();
 //    check.printDollarSymbolByCastDirectly();
