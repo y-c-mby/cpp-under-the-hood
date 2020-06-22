@@ -209,7 +209,7 @@ void doFormatterPtrs()
     };
 
     for (int i = 0; i < 3; ++i)
-        pfmt[i]->t.void_ptr[1](&pfmt[i],"Hello World!");
+        pfmt[i]->t.void_ptr[1](pfmt[i],"Hello World!");
     ppc_destroy_checker(&p);
     destroy_multiplier(&m);
     ppdf_destroy_fixer(&d);

@@ -112,7 +112,7 @@ void ppf_destroy_text(pre_post_fixerptr this){
 //}
 /*virtual*/void v_ppf_print_cptr(pre_post_fixerptr this,const char* text){
     printf("%-60s | ", "[PrePostFixer::print(const char*)]");
-    printf("%s\n", text);
+    printf("%s%s%s\n",this->pre, text,this->post);
 }
 /*virtual*/void v_ppf_print_lc(pre_post_fixerptr this,long num , char symbol){
     printf("%-60s | ","[PrePostFixer::print(long, char)]");
